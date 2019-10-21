@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.tbst.validation.controllers.User
 import com.tbst.validation.controllers.UserDataController
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType.APPLICATION_JSON
@@ -32,10 +34,9 @@ class UserDataControllerTest {
             .andReturn()
     }
 
-    @Test
-    fun `should reject bad user payload with 400 BadRequest`() {
-        val user = "{}"
-
+    @ParameterizedTest
+    @ValueSource(strings = ["{ }", """{ "name": "foo" }""", """{ "age": 3 }"""])
+    fun `should reject bad user payload with 400 BadRequest`(user: String) {
         mockMvc.perform(
             post("/api/user")
                 .content(user)
