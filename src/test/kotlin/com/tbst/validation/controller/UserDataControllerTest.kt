@@ -31,4 +31,17 @@ class UserDataControllerTest {
             .andExpect(status().isCreated)
             .andReturn()
     }
+
+    @Test
+    fun `should reject bad user payload with 400 BadRequest`() {
+        val user = "{}"
+
+        mockMvc.perform(
+            post("/api/user")
+                .content(user)
+                .contentType(APPLICATION_JSON)
+        )
+            .andExpect(status().isBadRequest)
+            .andReturn()
+    }
 }
